@@ -1,12 +1,14 @@
 <template>
-  <div id="app">
+  <v-app>
     <Navbar/>
-    <router-view/>
-  </div>
+    <v-content>
+      <router-view/>
+    </v-content>
+  </v-app>
 </template>
 
 <script lang="ts">
-import { Component, Vue } from 'vue-property-decorator';
+import {Component, Vue} from 'vue-property-decorator';
 import Navbar from '@/components/Navbar.vue';
 
 @Component({
@@ -16,5 +18,3 @@ import Navbar from '@/components/Navbar.vue';
 })
 export default class App extends Vue {}
 </script>
-<style>
-</style>

@@ -12,7 +12,7 @@
     <v-btn
       color="white"
       class="ma-2"
-      to="/about">
+      to="/history">
       <v-icon color="teal">mdi-playlist-check</v-icon>
       <span class="btn-text">Past Dilemmas</span>
     </v-btn>

@@ -6,13 +6,16 @@ export interface Argument {
   importance: number;
 }
 
+export interface DilemmaScore {
+  total_pro_score: number;
+  total_con_score: number;
+}
+
 export interface Dilemma {
-  id: number;
   date: string;
   question: string;
   arguments: Argument[];
-  total_pro_score: number;
-  total_con_score: number;
+  score: DilemmaScore;
 }
 
 const api = {
@@ -23,6 +26,9 @@ const api = {
       result.push(doc.data() as Dilemma);
     });
     return result;
+  },
+  saveDilemma: async (dilemma: Dilemma): Promise<void> => {
+    await db.collection('dilemmas').add({...dilemma});
   },
 };
 

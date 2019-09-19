@@ -1,6 +1,6 @@
 <template>
   <div>
-    <DilemmaVerdict :dilemma="dilemma"></DilemmaVerdict>
+    <DilemmaVerdict :score="dilemma.score"></DilemmaVerdict>
     <DilemmaProCon title="Pros" :arguments="pros"></DilemmaProCon>
     <DilemmaProCon title="Cons" :arguments="cons"></DilemmaProCon>
   </div>
@@ -10,7 +10,7 @@
 import {Vue, Component, Prop} from 'vue-property-decorator';
 import DilemmaVerdict from '@/components/DilemmaVerdict.vue';
 import DilemmaProCon from '@/components/DilemmaProCon.vue';
-import {Dilemma, Argument} from '@/db/firebaseApi';
+import {Dilemma, Argument, DilemmaScore} from '@/db/firebaseApi';
 
 @Component({
   components: {

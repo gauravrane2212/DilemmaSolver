@@ -57,21 +57,11 @@
       <DilemmaProCon v-show="cons.length > 0" title="Cons" :arguments="cons"/>
     </v-slide-y-transition>
 
-    <v-snackbar
-      :color="showSuccessSnackBar ? 'success' : 'error'"
-      top
-      :timeout="5000"
-      v-model="showSnackBar"
-    >
-      {{ snackBarMessage }}
-      <v-btn
-        dark
-        text
-        @click="showSnackBar = false"
-      >
-        Close
-      </v-btn>
-    </v-snackbar>
+    <DilemmaSnackbar
+      :show="showSnackbar"
+      :message="message"
+      :color="snackbarColor"
+      @dismiss="showSnackbar = false" />
   </div>
 </template>
 
@@ -80,6 +70,7 @@ import {Vue, Component} from 'vue-property-decorator';
 import DilemmaProCon from '@/components/DilemmaProCon.vue';
 import DilemmaVerdict from '@/components/DilemmaVerdict.vue';
 import DilemmaArgument from '@/components/DilemmaArgument.vue';
+import DilemmaSnackbar from '@/components/DilemmaSnackbar.vue';
 import api, { Argument, DilemmaScore, Dilemma } from '@/db/firebaseApi';
 
 @Component({
@@ -87,6 +78,7 @@ import api, { Argument, DilemmaScore, Dilemma } from '@/db/firebaseApi';
     DilemmaProCon,
     DilemmaVerdict,
     DilemmaArgument,
+    DilemmaSnackbar,
   },
 })
 export default class Dashboard extends Vue {
@@ -94,8 +86,8 @@ export default class Dashboard extends Vue {
   private currentArguments: Argument[] = [];
 
   private isSavingDilemma: boolean = false;
-  private showSnackBar: boolean = false;
-  private showSuccessSnackBar: boolean = true;
+  private showSnackbar: boolean = false;
+  private snackbarColor: string = 'success';
 
   private submitArgument(argument: Argument) {
     this.currentArguments.push(argument);
@@ -109,15 +101,15 @@ export default class Dashboard extends Vue {
     return this.currentArguments.filter((argument: Argument) => !argument.isPro);
   }
 
+  private get message(): string {
+    return this.snackbarColor === 'success' ? 'Dilemma saved successfully!' : 'Error saving dilemma. Please try again!';
+  }
+
   private get currentScore(): DilemmaScore {
     return {
       total_con_score: this.getTotalScore(this.cons),
       total_pro_score: this.getTotalScore(this.pros),
     };
-  }
-
-  private get snackBarMessage(): string {
-    return this.showSuccessSnackBar ? 'Dilemma saved successfully!' : 'Error saving dilemma. Please try again!';
   }
 
   private getTotalScore(array: Argument[]): number {
@@ -132,9 +124,11 @@ export default class Dashboard extends Vue {
       score: this.currentScore,
       arguments: this.currentArguments,
     };
-    await api.saveDilemma(dilemma).catch((error) => this.showSuccessSnackBar = false);
+    await api.saveDilemma(dilemma).catch((error) => {
+      this.snackbarColor = 'error';
+    });
     this.isSavingDilemma = false;
-    this.showSnackBar = true;
+    this.showSnackbar = true;
 
     this.resetDilemmaState();
   }
